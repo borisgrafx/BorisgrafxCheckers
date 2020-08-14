@@ -1,7 +1,9 @@
 package javafx;
 
 public class Checker {
+    //'b' - black, чёрная шашка; 'w' - white, белая шашка; 'c' - [b + 1], чёрная дамка; 'x' - [w + 1], белая дамка
     private char whChk;
+    //'g' - green; 'y' - yellow; 'r' - red; 'b' - blue
     private char color;
 
     public Checker(char whChk, char color) {
