@@ -2,6 +2,7 @@ package javafx;
 
 import javafx.scene.control.Button;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class Tester {
@@ -58,7 +59,7 @@ class Tester {
     }
 
     @Test
-    void eatingTest(){
+    void eatingTest() {
         clearList(mustBe);
         clearList(giver);
 

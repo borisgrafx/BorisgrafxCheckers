@@ -4,9 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.io.InputStream;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -65,23 +64,23 @@ public class FXMLDocumentController implements Initializable {
 
     public void newGame() {
         for (int i = 0; i < 12; i++) {
-            checkers[i] = new Checker('b', 'g');
+            checkers[i] = new Checker('b', 'g', buttons[i]);
         }
         for (int i = 12; i < 20; i++) {
-            checkers[i] = new Checker('e', 'g');
+            checkers[i] = new Checker('e', 'g', buttons[i]);
         }
         for (int i = 20; i < 32; i++) {
-            checkers[i] = new Checker('w', 'g');
+            checkers[i] = new Checker('w', 'g', buttons[i]);
         }
         clearColors();
         id = 0;
         previd = 1;
         for (int i = 0; i < 12; i++)
-            imageChanger(i, 'b');
+            checkers[i].imageChanger('b');
         for (int i = 12; i < 20; i++)
-            buttons[i].setGraphic(new ImageView());
+            checkers[i].btn.setGraphic(new ImageView());
         for (int i = 20; i < 32; i++)
-            imageChanger(i, 'w');
+            checkers[i].imageChanger('w');
         blackMove = true;
     }
 
@@ -103,7 +102,7 @@ public class FXMLDocumentController implements Initializable {
             if (Math.abs(id - previd) >= 7 && !transBig) {
                 if ((blackMove && (checkers[id].getWhChk() == 'b' || checkers[id].getWhChk() == 'c'))
                         || (!blackMove && (checkers[id].getWhChk() == 'w' || checkers[id].getWhChk() == 'x'))) {
-                    recoloriser(id, 'r');
+                    checkers[id].recoloriser('r');
                     chooser('m');
                 }
                 for (int i = 0; i < 32; i++) {
@@ -114,7 +113,7 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
             if (!killStreak) {
-                recoloriser(id, 'g');
+                checkers[id].recoloriser('g');
                 id = 0;
                 previd = -1;
                 blackMove = !blackMove;
@@ -125,7 +124,7 @@ public class FXMLDocumentController implements Initializable {
                 clearColors();
             if ((blackMove && (checkers[id].getWhChk() == 'b' || checkers[id].getWhChk() == 'c'))
                     || (!blackMove && (checkers[id].getWhChk() == 'w' || checkers[id].getWhChk() == 'x'))) {
-                recoloriser(id, 'r');
+                checkers[id].recoloriser('r');
                 chooser('s');
             }
         }
@@ -144,35 +143,35 @@ public class FXMLDocumentController implements Initializable {
             if (blackMove || checkers[id].getWhChk() == 'x' || checkers[id].getWhChk() == 'c') {
                 if (id == 4 || id == 12 || id == 20 || id == 3 || id == 11 || id == 19 || id == 27) {
                     if (checkers[id + 4].getWhChk() == 'e')
-                        recoloriser(id + 4, 'y');
+                        checkers[id + 4].recoloriser('y');
                 } else if ((id >= 0 && id <= 2) || (id >= 8 && id <= 10) || (id >= 16 && id <= 18)
                         || (id >= 24 && id <= 26)) {
                     if (checkers[id + 5].getWhChk() == 'e')
-                        recoloriser(id + 5, 'y');
+                        checkers[id + 5].recoloriser('y');
                     if (checkers[id + 4].getWhChk() == 'e')
-                        recoloriser(id + 4, 'y');
+                        checkers[id + 4].recoloriser('y');
                 } else if ((id >= 5 && id <= 7) || (id >= 13 && id <= 15) || (id >= 21 && id <= 23)) {
                     if (checkers[id + 3].getWhChk() == 'e')
-                        recoloriser(id + 3, 'y');
+                        checkers[id + 3].recoloriser('y');
                     if (checkers[id + 4].getWhChk() == 'e')
-                        recoloriser(id + 4, 'y');
+                        checkers[id + 4].recoloriser('y');
                 }
             }
             if (!blackMove || checkers[id].getWhChk() == 'x' || checkers[id].getWhChk() == 'c') {
                 if (id == 4 || id == 12 || id == 20 || id == 28 || id == 11 || id == 19 || id == 27) {
                     if (checkers[id - 4].getWhChk() == 'e')
-                        recoloriser(id - 4, 'y');
+                        checkers[id - 4].recoloriser('y');
                 } else if ((id >= 8 && id <= 10) || (id >= 16 && id <= 18) || (id >= 24 && id <= 26)) {
                     if (checkers[id - 3].getWhChk() == 'e')
-                        recoloriser(id - 3, 'y');
+                        checkers[id - 3].recoloriser('y');
                     if (checkers[id - 4].getWhChk() == 'e')
-                        recoloriser(id - 4, 'y');
+                        checkers[id - 4].recoloriser('y');
                 } else if ((id >= 5 && id <= 7) || (id >= 13 && id <= 15) || (id >= 21 && id <= 23)
                         || (id >= 29 && id <= 31)) {
                     if (checkers[id - 5].getWhChk() == 'e')
-                        recoloriser(id - 5, 'y');
+                        checkers[id - 5].recoloriser('y');
                     if (checkers[id - 4].getWhChk() == 'e')
-                        recoloriser(id - 4, 'y');
+                        checkers[id - 4].recoloriser('y');
                 }
             }
         }
@@ -195,8 +194,8 @@ public class FXMLDocumentController implements Initializable {
                 if (id != 3 && id != 7 && id != 11 && id != 15 && id != 19 && id < 23
                         && checkers[id + 9].getWhChk() == 'e' && (checkers[id + pluser].getWhChk() == c1
                         || checkers[id + pluser].getWhChk() == c2)) {
-                    recoloriser(id + pluser, 'b');
-                    recoloriser(id + 9, 'y');
+                    checkers[id + pluser].recoloriser('b');
+                    checkers[id + 9].recoloriser('y');
                 }
                 if (idsorter)
                     pluser = 4;
@@ -204,8 +203,8 @@ public class FXMLDocumentController implements Initializable {
                 if (id != 0 && id != 4 && id != 8 && id != 12 && id != 16 && id != 20 && id < 24
                         && checkers[id + 7].getWhChk() == 'e' && (checkers[id + pluser].getWhChk() == c1
                         || checkers[id + pluser].getWhChk() == c2)) {
-                    recoloriser(id + pluser, 'b');
-                    recoloriser(id + 7, 'y');
+                    checkers[id + pluser].recoloriser('b');
+                    checkers[id + 7].recoloriser('y');
                 }
             }
             if (!blackMove || checkers[id].getWhChk() == 'x' || checkers[id].getWhChk() == 'c') {
@@ -216,8 +215,8 @@ public class FXMLDocumentController implements Initializable {
                 if (id > 8 && id != 12 && id != 16 && id != 20 && id != 24 && id != 28
                         && checkers[id - 9].getWhChk() == 'e' && (checkers[id - pluser].getWhChk() == c1
                         || checkers[id - pluser].getWhChk() == c2)) {
-                    recoloriser(id - pluser, 'b');
-                    recoloriser(id - 9, 'y');
+                    checkers[id - pluser].recoloriser('b');
+                    checkers[id - 9].recoloriser('y');
                 }
                 if (idsorter)
                     pluser = 3;
@@ -225,40 +224,21 @@ public class FXMLDocumentController implements Initializable {
                 if (id > 7 && id != 11 && id != 15 && id != 19 && id != 23 && id != 27 && id != 31
                         && checkers[id - 7].getWhChk() == 'e' && (checkers[id - pluser].getWhChk() == c1
                         || checkers[id - pluser].getWhChk() == c2)) {
-                    recoloriser(id - pluser, 'b');
-                    recoloriser(id - 7, 'y');
+                    checkers[id - pluser].recoloriser('b');
+                    checkers[id - 7].recoloriser('y');
                 }
             }
         }
     }
 
     public void move(int id, int previd) {
-        if (blackMove || checkers[previd].getWhChk() == 'c' || checkers[previd].getWhChk() == 'x') {
-            if (id - previd == 9) {
-                if (checkers[id - 4].getColor() == 'b')
-                    imageChanger(id - 4, 'n');
-                else if (checkers[id - 5].getColor() == 'b')
-                    imageChanger(id - 5, 'n');
-            } else if (id - previd == 7) {
-                if (checkers[id - 4].getColor() == 'b')
-                    imageChanger(id - 4, 'n');
-                else if (checkers[id - 3].getColor() == 'b')
-                    imageChanger(id - 3, 'n');
-            }
-        }
-        if (!blackMove || checkers[previd].getWhChk() == 'c' || checkers[previd].getWhChk() == 'x') {
-            if (previd - id == 9) {
-                if (checkers[id + 4].getColor() == 'b')
-                    imageChanger(id + 4, 'n');
-                else if (checkers[id + 5].getColor() == 'b')
-                    imageChanger(id + 5, 'n');
-            } else if (previd - id == 7) {
-                if (checkers[id + 4].getColor() == 'b')
-                    imageChanger(id + 4, 'n');
-                else if (checkers[id + 3].getColor() == 'b')
-                    imageChanger(id + 3, 'n');
-            }
-        }
+        int koef;
+        if (blackMove)
+            koef = 1;
+        else koef = -1;
+        moveAction(koef, id, previd);
+        if (checkers[previd].getWhChk() == 'c' || checkers[previd].getWhChk() == 'x')
+            moveAction(koef * -1, id, previd);
         char name = checkers[previd].getWhChk();
         if (name == 'b' && id >= 28 && id <= 31) {
             name = 'c';
@@ -267,46 +247,28 @@ public class FXMLDocumentController implements Initializable {
             name = 'x';
             transBig = true;
         } else transBig = false;
-        imageChanger(id, name);
-        imageChanger(previd, 'n');
+        checkers[id].imageChanger(name);
+        checkers[previd].imageChanger('n');
+    }
+
+    void moveAction(int koef, int id, int previd) {
+        if (Math.abs(id - previd) == 9) {
+            if (checkers[id - 4 * koef].getColor() == 'b')
+                checkers[id - 4 * koef].imageChanger('n');
+            else if (checkers[id - 5 * koef].getColor() == 'b')
+                checkers[id - 5 * koef].imageChanger('n');
+        } else if (Math.abs(id - previd) == 7) {
+            if (checkers[id - 4 * koef].getColor() == 'b')
+                checkers[id - 4 * koef].imageChanger('n');
+            else if (checkers[id - 3 * koef].getColor() == 'b')
+                checkers[id - 3 * koef].imageChanger('n');
+        }
     }
 
     void clearColors() {
         for (int i = 0; i < 32; i++) {
-            recoloriser(i, 'g');
+            checkers[i].recoloriser('g');
         }
-    }
-
-    void recoloriser(int checkerNum, char newColor) {
-        checkers[checkerNum].setColor(newColor);
-        switch (newColor) {
-            case 'b':
-                buttons[checkerNum].setStyle("-fx-background-color: #2E9AFE;");
-                break;
-            case 'y':
-                buttons[checkerNum].setStyle("-fx-background-color: #FFFF00;");
-                break;
-            case 'r':
-                buttons[checkerNum].setStyle("-fx-background-color: #FF0000;");
-                break;
-            default:
-                buttons[checkerNum].setStyle("-fx-background-color: #006400;");
-                break;
-        }
-    }
-
-    void imageChanger(int checkerNum, char name) {
-        if (name != 'n') {
-            InputStream input = getClass().getResourceAsStream(name + ".png");
-            Image image = new Image(input);
-            ImageView imageView = new ImageView(image);
-            buttons[checkerNum].setGraphic(imageView);
-            checkers[checkerNum].setWhChk(name);
-        } else {
-            checkers[checkerNum].setWhChk('e');
-            buttons[checkerNum].setGraphic(new ImageView());
-        }
-
     }
 
     //Далее идут методы, связанные с тестированием
@@ -351,10 +313,10 @@ public class FXMLDocumentController implements Initializable {
         checkers = new Checker[32];
         newGame();
         for (int i = 0; i < checko.length; i++) {
-            checkers[i] = new Checker(checko[i], 'g');
+            checkers[i] = new Checker(checko[i], 'g', buttons[i]);
         }
         for (int i = checko.length; i < 32; i++) {
-            checkers[i] = new Checker('e', 'g');
+            checkers[i] = new Checker('e', 'g', buttons[i]);
         }
         for (int i = 0; i < checko.length; i++) {
             checkers[i].setWhChk(checko[i]);
