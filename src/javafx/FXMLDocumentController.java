@@ -51,7 +51,6 @@ public class FXMLDocumentController implements Initializable {
     private boolean killStreak = false;
     private boolean transBig = false;
 
-    //event.getSource возвращает строку Button[id=button57, styleClass=button]'' для нажатой кнопки
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         buttons = new Button[]{button1, button2, button3, button4, button5, button6, button7, button8,
@@ -62,6 +61,7 @@ public class FXMLDocumentController implements Initializable {
         newGame();
     }
 
+    //Расстановка шашек по клеткам для новой игры
     public void newGame() {
         for (int i = 0; i < 12; i++) {
             checkers[i] = new Checker('b', 'g', buttons[i]);
@@ -84,6 +84,7 @@ public class FXMLDocumentController implements Initializable {
         blackMove = true;
     }
 
+    //При нажатии на кнопку: позволяет выбрать шашку и посмотреть доступные для её перемещения клетки, вызвав метод chooser
     @FXML
     private void buttonAction(ActionEvent event) {
         String source = event.getSource().toString();
@@ -129,12 +130,10 @@ public class FXMLDocumentController implements Initializable {
             }
         }
         previd = id;
-        //Жёлтый #FFFF00
-        //Красный #FF0000
-        //Синий #2E9AFE
-        //Зелёный дефолт #006400
+
     }
 
+    //Закрашивает жёлтым клетки, куда может походить шашка. Если на пути есть вражеская шашка, которую можно съесть, закрашивает её клетку синим
     //shouldEat: 'n' = no; 's' = should; 'm' = must
     //'n' - только ходит; 'm' - только ест; 's' - ходит и, если может, ест
     public void chooser(char shouldEat) {
@@ -231,6 +230,7 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
+    //Передвигает шашку на выбранную клетку. Убирает съеденные шашки, вызвав moveAction. Превращает при достижения конца поля походившую шашку в дамку.
     public void move(int id, int previd) {
         int koef;
         if (blackMove)
@@ -251,20 +251,24 @@ public class FXMLDocumentController implements Initializable {
         checkers[previd].imageChanger('n');
     }
 
+    //Убирает съеденную шашку
     void moveAction(int koef, int id, int previd) {
-        if (Math.abs(id - previd) == 9) {
-            if (checkers[id - 4 * koef].getColor() == 'b')
-                checkers[id - 4 * koef].imageChanger('n');
-            else if (checkers[id - 5 * koef].getColor() == 'b')
-                checkers[id - 5 * koef].imageChanger('n');
-        } else if (Math.abs(id - previd) == 7) {
-            if (checkers[id - 4 * koef].getColor() == 'b')
-                checkers[id - 4 * koef].imageChanger('n');
-            else if (checkers[id - 3 * koef].getColor() == 'b')
-                checkers[id - 3 * koef].imageChanger('n');
-        }
+        try {
+            if (Math.abs(id - previd) == 9) {
+                if (checkers[id - 4 * koef].getColor() == 'b')
+                    checkers[id - 4 * koef].imageChanger('n');
+                else if (checkers[id - 5 * koef].getColor() == 'b')
+                    checkers[id - 5 * koef].imageChanger('n');
+            } else if (Math.abs(id - previd) == 7) {
+                if (checkers[id - 4 * koef].getColor() == 'b')
+                    checkers[id - 4 * koef].imageChanger('n');
+                else if (checkers[id - 3 * koef].getColor() == 'b')
+                    checkers[id - 3 * koef].imageChanger('n');
+            }
+        } catch (ArrayIndexOutOfBoundsException ignored) {}
     }
 
+    //Перекрашивает клетки жёлтого, синего и красного цвета обратно в зелёный
     void clearColors() {
         for (int i = 0; i < 32; i++) {
             checkers[i].recoloriser('g');
@@ -273,6 +277,7 @@ public class FXMLDocumentController implements Initializable {
 
     //Далее идут методы, связанные с тестированием
 
+    //Создание поля с кастомной расстановкой шашек
     public void myWorld(char[] checko) {
         Button button1 = new Button();
         Button button2 = new Button();
@@ -323,6 +328,7 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
+    //Возвращает информацию о содержании всех зелёных клеток в виде массива
     public char[] getCheckers() {
         char[] whoIsWho = new char[32];
         for (int i = 0; i < 32; i++)
@@ -330,6 +336,7 @@ public class FXMLDocumentController implements Initializable {
         return whoIsWho;
     }
 
+    //Меняет id выбранной клетки, id предыдущей клетки, и черёд хода
     void setId(int setCur, int setPrev, boolean whoseMove) {
         id = setCur;
         previd = setPrev;

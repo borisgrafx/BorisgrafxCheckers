@@ -19,6 +19,11 @@ public class Checker {
         this.btn = btn;
     }
 
+    //Перекрашивает клетку в выбранный цвет
+    //Жёлтый #FFFF00
+    //Красный #FF0000
+    //Синий #2E9AFE
+    //Зелёный дефолт #006400
     void recoloriser(Checker this, char newColor) {
         color = newColor;
         switch (newColor) {
@@ -37,6 +42,7 @@ public class Checker {
         }
     }
 
+    //Меняет шашку, стоящую в клетке
     void imageChanger(Checker this, char name) {
         if (name != 'n') {
             InputStream input = getClass().getResourceAsStream(name + ".png");
