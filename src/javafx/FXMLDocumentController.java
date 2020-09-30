@@ -50,6 +50,7 @@ public class FXMLDocumentController implements Initializable {
     public Checker[] checkers;
     private boolean killStreak = false;
     private boolean transBig = false;
+    boolean canEat = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -82,11 +83,13 @@ public class FXMLDocumentController implements Initializable {
         for (int i = 20; i < 32; i++)
             checkers[i].imageChanger('w');
         blackMove = true;
+        canEat = false;
     }
 
     //При нажатии на кнопку: позволяет выбрать шашку и посмотреть доступные для её перемещения клетки, вызвав метод chooser
     @FXML
     private void buttonAction(ActionEvent event) {
+
         String source = event.getSource().toString();
         id = 0;
         for (int i = 0; i < source.length(); i++) {
@@ -119,7 +122,17 @@ public class FXMLDocumentController implements Initializable {
                 previd = -1;
                 blackMove = !blackMove;
             }
-
+            canEat = false;
+            int a = id;
+            for (int i = 0; i < 32; i++) {
+                if ((blackMove && (checkers[i].getWhChk() == 'b' || checkers[i].getWhChk() == 'c')) || (!blackMove && (checkers[i].getWhChk() == 'w' || checkers[i].getWhChk() == 'x')) ) {
+                    id = i;
+                    chooser('m');
+                }
+            }
+            id = a;
+            if (!killStreak)
+                clearColors();
         } else if (!killStreak) {
             if (previd != id)
                 clearColors();
@@ -130,7 +143,12 @@ public class FXMLDocumentController implements Initializable {
             }
         }
         previd = id;
-
+        /*for (int i = 0; i < 31; i++) {
+            if(checkers[i].getWhChk() != 'e') {
+                id = i;
+                chooser('m');
+            }
+        }*/
     }
 
     //Закрашивает жёлтым клетки, куда может походить шашка.
@@ -139,7 +157,65 @@ public class FXMLDocumentController implements Initializable {
     //'n' - только ходит; 'm' - только ест; 's' - ходит и, если может, ест
     public void chooser(char shouldEat) {
         boolean idsorter;
-        if (shouldEat != 'm') {
+        if (shouldEat != 'n') {
+            char c1;
+            char c2;
+            if (blackMove) {
+                c1 = 'w';
+                c2 = 'x';
+            } else {
+                c1 = 'b';
+                c2 = 'c';
+            }
+            int pluser;
+            if (blackMove || checkers[id].getWhChk() == 'x' || checkers[id].getWhChk() == 'c') {
+                idsorter = (id >= 0 && id <= 3) || (id >= 8 && id <= 11) || (id >= 16 && id <= 19);
+                if (idsorter)
+                    pluser = 5;
+                else pluser = 4;
+                if (id != 3 && id != 7 && id != 11 && id != 15 && id != 19 && id < 23
+                        && checkers[id + 9].getWhChk() == 'e' && (checkers[id + pluser].getWhChk() == c1
+                        || checkers[id + pluser].getWhChk() == c2)) {
+                    checkers[id + pluser].recoloriser('b');
+                    checkers[id + 9].recoloriser('y');
+                    canEat = true;
+                }
+                if (idsorter)
+                    pluser = 4;
+                else pluser = 3;
+                if (id != 0 && id != 4 && id != 8 && id != 12 && id != 16 && id != 20 && id < 24
+                        && checkers[id + 7].getWhChk() == 'e' && (checkers[id + pluser].getWhChk() == c1
+                        || checkers[id + pluser].getWhChk() == c2)) {
+                    checkers[id + pluser].recoloriser('b');
+                    checkers[id + 7].recoloriser('y');
+                    canEat = true;
+                }
+            }
+            if (!blackMove || checkers[id].getWhChk() == 'x' || checkers[id].getWhChk() == 'c') {
+                idsorter = (id >= 24 && id <= 27) || (id >= 8 && id <= 11) || (id >= 16 && id <= 19);
+                if (idsorter)
+                    pluser = 4;
+                else pluser = 5;
+                if (id > 8 && id != 12 && id != 16 && id != 20 && id != 24 && id != 28
+                        && checkers[id - 9].getWhChk() == 'e' && (checkers[id - pluser].getWhChk() == c1
+                        || checkers[id - pluser].getWhChk() == c2)) {
+                    checkers[id - pluser].recoloriser('b');
+                    checkers[id - 9].recoloriser('y');
+                    canEat = true;
+                }
+                if (idsorter)
+                    pluser = 3;
+                else pluser = 4;
+                if (id > 7 && id != 11 && id != 15 && id != 19 && id != 23 && id != 27 && id != 31
+                        && checkers[id - 7].getWhChk() == 'e' && (checkers[id - pluser].getWhChk() == c1
+                        || checkers[id - pluser].getWhChk() == c2)) {
+                    checkers[id - pluser].recoloriser('b');
+                    checkers[id - 7].recoloriser('y');
+                    canEat = true;
+                }
+            }
+        }
+        if (shouldEat != 'm' && !canEat) {
             if (blackMove || checkers[id].getWhChk() == 'x' || checkers[id].getWhChk() == 'c') {
                 if (id == 4 || id == 12 || id == 20 || id == 3 || id == 11 || id == 19 || id == 27) {
                     if (checkers[id + 4].getWhChk() == 'e')
@@ -175,64 +251,11 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
         }
-        if (shouldEat != 'n') {
-            char c1;
-            char c2;
-            if (blackMove) {
-                c1 = 'w';
-                c2 = 'x';
-            } else {
-                c1 = 'b';
-                c2 = 'c';
-            }
-            int pluser;
-            if (blackMove || checkers[id].getWhChk() == 'x' || checkers[id].getWhChk() == 'c') {
-                idsorter = (id >= 0 && id <= 3) || (id >= 8 && id <= 11) || (id >= 16 && id <= 19);
-                if (idsorter)
-                    pluser = 5;
-                else pluser = 4;
-                if (id != 3 && id != 7 && id != 11 && id != 15 && id != 19 && id < 23
-                        && checkers[id + 9].getWhChk() == 'e' && (checkers[id + pluser].getWhChk() == c1
-                        || checkers[id + pluser].getWhChk() == c2)) {
-                    checkers[id + pluser].recoloriser('b');
-                    checkers[id + 9].recoloriser('y');
-                }
-                if (idsorter)
-                    pluser = 4;
-                else pluser = 3;
-                if (id != 0 && id != 4 && id != 8 && id != 12 && id != 16 && id != 20 && id < 24
-                        && checkers[id + 7].getWhChk() == 'e' && (checkers[id + pluser].getWhChk() == c1
-                        || checkers[id + pluser].getWhChk() == c2)) {
-                    checkers[id + pluser].recoloriser('b');
-                    checkers[id + 7].recoloriser('y');
-                }
-            }
-            if (!blackMove || checkers[id].getWhChk() == 'x' || checkers[id].getWhChk() == 'c') {
-                idsorter = (id >= 24 && id <= 27) || (id >= 8 && id <= 11) || (id >= 16 && id <= 19);
-                if (idsorter)
-                    pluser = 4;
-                else pluser = 5;
-                if (id > 8 && id != 12 && id != 16 && id != 20 && id != 24 && id != 28
-                        && checkers[id - 9].getWhChk() == 'e' && (checkers[id - pluser].getWhChk() == c1
-                        || checkers[id - pluser].getWhChk() == c2)) {
-                    checkers[id - pluser].recoloriser('b');
-                    checkers[id - 9].recoloriser('y');
-                }
-                if (idsorter)
-                    pluser = 3;
-                else pluser = 4;
-                if (id > 7 && id != 11 && id != 15 && id != 19 && id != 23 && id != 27 && id != 31
-                        && checkers[id - 7].getWhChk() == 'e' && (checkers[id - pluser].getWhChk() == c1
-                        || checkers[id - pluser].getWhChk() == c2)) {
-                    checkers[id - pluser].recoloriser('b');
-                    checkers[id - 7].recoloriser('y');
-                }
-            }
-        }
+
     }
 
     //Передвигает шашку на выбранную клетку. Убирает съеденные шашки, вызвав moveAction.
-    // Превращает при достижения конца поля походившую шашку в дамку.
+    //Превращает при достижении конца поля походившую шашку в дамку.
     public void move(int id, int previd) {
         int koef;
         if (blackMove)
